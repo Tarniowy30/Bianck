@@ -752,13 +752,14 @@ h3,
 .mensagem-jogo {
   color: #0b301c !important;
 }
-/* CORREÇÃO MAIS FORTE DA ETIQUETA */
+/* ETIQUETA AGRINHO - CONTRASTE MÁXIMO */
 
-.hero .etiqueta {
-  background: #052e16 !important;
+section#inicio.hero .hero-conteudo p.etiqueta {
+  background: #000000 !important;
   color: #ffffff !important;
-  border: 2px solid #bbf7d0 !important;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35) !important;
+  border: 3px solid #ffffff !important;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45) !important;
   font-weight: 900 !important;
-  letter-spacing: 0.5px !important;
+  letter-spacing: 0.8px !important;
+  text-shadow: none !important;
 }
