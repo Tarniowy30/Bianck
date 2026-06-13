@@ -414,8 +414,9 @@ function pararJogo() {
     { passive: false }
   );
 
-  btnIniciar.addEventListener("click", iniciarJogo);
-  btnReiniciar.addEventListener("click", reiniciarJogo);
+btnIniciar.addEventListener("click", iniciarJogo);
+btnParar.addEventListener("click", pararJogo);
+btnReiniciar.addEventListener("click", reiniciarJogo);
 
   desenharTelaInicial();
   atualizarPainel();
