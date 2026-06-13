@@ -353,6 +353,52 @@ body {
   margin-top: 4px;
 }
 
+/* MELHOR PONTUAÇÃO */
+
+.melhor-pontuacao {
+  max-width: 320px;
+  margin: 0 auto 18px auto;
+  background: #fef9c3;
+  border: 2px solid #ca8a04;
+  border-radius: 16px;
+  padding: 12px 18px;
+  text-align: center;
+  color: #713f12;
+  font-weight: bold;
+}
+
+.melhor-pontuacao span {
+  display: inline-block;
+  margin-right: 6px;
+}
+
+.melhor-pontuacao strong {
+  font-size: 24px;
+}
+
+/* INSTRUÇÕES DO JOGO */
+
+.instrucoes-box {
+  background: #ecfccb;
+  border: 1px solid #bbf7d0;
+  border-radius: 18px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.instrucoes-box h3 {
+  color: #14532d;
+  margin-bottom: 10px;
+  text-align: center;
+  font-size: 22px;
+}
+
+.instrucoes-box p {
+  color: #36543e;
+  margin-bottom: 8px;
+  text-align: center;
+}
+
 canvas {
   width: 100%;
   max-width: 900px;
@@ -404,13 +450,6 @@ canvas {
 
 #btnReiniciarJogo:hover {
   background: #a16207;
-}
-
-.instrucoes-jogo {
-  text-align: center;
-  margin-top: 16px;
-  color: #3f5f47;
-  font-size: 15px;
 }
 
 /* QUIZ */
@@ -591,6 +630,10 @@ canvas {
   .placar {
     grid-template-columns: 1fr;
   }
+
+  .melhor-pontuacao {
+    max-width: 100%;
+  }
 }
 
 @media (max-width: 520px) {
@@ -638,5 +681,9 @@ canvas {
   .campo-visual {
     font-size: 32px;
     gap: 8px;
+  }
+
+  .instrucoes-box p {
+    text-align: left;
   }
 }

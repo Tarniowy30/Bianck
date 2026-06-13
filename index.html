@@ -6,8 +6,15 @@
 
   <title>EcoLavoura | Bianck</title>
 
-  <meta name="description" content="Projeto EcoLavoura: jogo educativo sobre sustentabilidade, agricultura e cuidado com o meio ambiente." />
-  <meta name="keywords" content="agrinho, programação, sustentabilidade, agro, meio ambiente, html, css, javascript" />
+  <meta
+    name="description"
+    content="Projeto EcoLavoura: jogo educativo sobre sustentabilidade, agricultura, tecnologia e cuidado com o meio ambiente."
+  />
+
+  <meta
+    name="keywords"
+    content="agrinho, programação, sustentabilidade, agro, meio ambiente, html, css, javascript, EcoLavoura, Bianck"
+  />
 
   <link rel="stylesheet" href="style.css" />
 </head>
@@ -120,11 +127,13 @@
         </p>
 
         <ul>
-          <li>Variáveis para pontuação, tempo e saúde da lavoura.</li>
+          <li>Variáveis para controlar pontuação, tempo e saúde da lavoura.</li>
           <li>Funções para iniciar, reiniciar e finalizar o jogo.</li>
           <li>Eventos de clique, teclado, mouse e toque na tela.</li>
           <li>Canvas para desenhar o cenário, o jogador e os itens.</li>
+          <li>Colisão entre o carrinho ecológico e os itens que caem.</li>
           <li>Quiz interativo com verificação de respostas.</li>
+          <li>Manipulação do DOM para atualizar textos e pontuações na tela.</li>
         </ul>
       </div>
     </section>
@@ -183,6 +192,27 @@
           </div>
         </div>
 
+        <div class="melhor-pontuacao">
+          <span>🏅 Melhor pontuação:</span>
+          <strong id="melhorPontuacao">0</strong>
+        </div>
+
+        <div class="instrucoes-box">
+          <h3>Como jogar</h3>
+
+          <p>
+            Use as setas do teclado, o mouse ou o toque na tela para mover o carrinho ecológico.
+          </p>
+
+          <p>
+            <strong>Colete:</strong> ♻️ reciclagem, 💧 água limpa, 🌱 muda e 🐝 polinizador.
+          </p>
+
+          <p>
+            <strong>Evite:</strong> 🔥 queimada, ☠️ veneno, 🧪 produto químico e 🛢️ poluição.
+          </p>
+        </div>
+
         <canvas id="gameCanvas" width="900" height="450">
           Seu navegador não suporta canvas.
         </canvas>
@@ -195,10 +225,6 @@
           <button id="btnIniciarJogo" type="button">Iniciar jogo</button>
           <button id="btnReiniciarJogo" type="button">Reiniciar</button>
         </div>
-
-        <p class="instrucoes-jogo">
-          Use as setas do teclado, o mouse ou o toque na tela para mover o carrinho ecológico.
-        </p>
       </div>
     </section>
 
@@ -251,7 +277,7 @@
       <div class="creditos-box">
         <p>
           <strong>Projeto:</strong> EcoLavoura<br />
-          <strong>Tema:</strong> Agro forte, futuro sustentável<br />
+          <strong>Tema:</strong> Agro forte, futuro sustentável: equilíbrio entre produção e meio ambiente<br />
           <strong>Autora:</strong> Bianck<br />
           <strong>Categoria:</strong> Programação Front-End<br />
           <strong>Tecnologias:</strong> HTML, CSS e JavaScript<br />
@@ -260,7 +286,8 @@
 
         <p>
           Os elementos visuais principais foram criados com emojis e desenhos
-          feitos por código no canvas do JavaScript.
+          feitos por código no canvas do JavaScript. O jogo foi organizado com
+          variáveis, funções, eventos, pontuação, tempo, colisão e quiz interativo.
         </p>
       </div>
     </section>

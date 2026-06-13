@@ -14,6 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const pontuacaoElemento = document.getElementById("pontuacao");
   const saudeElemento = document.getElementById("saude");
   const tempoElemento = document.getElementById("tempo");
+  const melhorPontuacaoElemento = document.getElementById("melhorPontuacao");
   const mensagemJogo = document.getElementById("mensagemJogo");
 
   const btnIniciar = document.getElementById("btnIniciarJogo");
@@ -23,6 +24,8 @@ document.addEventListener("DOMContentLoaded", () => {
   let pontuacao = 0;
   let saude = 100;
   let tempo = 45;
+
+  let melhorPontuacao = Number(localStorage.getItem("melhorPontuacaoEcoLavoura")) || 0;
 
   let itens = [];
   let teclas = {};
@@ -60,6 +63,14 @@ document.addEventListener("DOMContentLoaded", () => {
     pontuacaoElemento.textContent = pontuacao;
     saudeElemento.textContent = saude;
     tempoElemento.textContent = tempo;
+    melhorPontuacaoElemento.textContent = melhorPontuacao;
+  }
+
+  function salvarMelhorPontuacao() {
+    if (pontuacao > melhorPontuacao) {
+      melhorPontuacao = pontuacao;
+      localStorage.setItem("melhorPontuacaoEcoLavoura", melhorPontuacao);
+    }
   }
 
   function desenharCenario() {
@@ -281,13 +292,20 @@ document.addEventListener("DOMContentLoaded", () => {
     clearInterval(intervaloItens);
     cancelAnimationFrame(animacaoId);
 
+    salvarMelhorPontuacao();
+    atualizarPainel();
+
+    let tituloFinal = "";
     let mensagemFinal = "";
 
     if (pontuacao >= 180 && saude >= 60) {
-      mensagemFinal = "Excelente! Você salvou a lavoura e protegeu o meio ambiente.";
+      tituloFinal = "🌟 Guardião da Lavoura";
+      mensagemFinal = "Excelente! Você protegeu muito bem o campo e o meio ambiente.";
     } else if (pontuacao >= 90 && saude >= 30) {
+      tituloFinal = "🌱 Protetor do Campo";
       mensagemFinal = "Bom trabalho! A lavoura foi protegida, mas ainda pode melhorar.";
     } else {
+      tituloFinal = "⚠️ Lavoura em risco";
       mensagemFinal = "A lavoura precisa de mais cuidado. Tente novamente!";
     }
 
@@ -297,16 +315,19 @@ document.addEventListener("DOMContentLoaded", () => {
     desenharJogador();
 
     ctx.fillStyle = "rgba(20, 83, 45, 0.88)";
-    ctx.fillRect(120, 135, 660, 160);
+    ctx.fillRect(100, 120, 700, 190);
 
     ctx.fillStyle = "#ffffff";
-    ctx.font = "bold 34px Arial";
+    ctx.font = "bold 32px Arial";
     ctx.textAlign = "center";
-    ctx.fillText("Fim de jogo", canvas.width / 2, 185);
+    ctx.fillText("Fim de jogo", canvas.width / 2, 165);
+
+    ctx.font = "bold 26px Arial";
+    ctx.fillText(tituloFinal, canvas.width / 2, 205);
 
     ctx.font = "22px Arial";
-    ctx.fillText(`Pontuação: ${pontuacao}`, canvas.width / 2, 225);
-    ctx.fillText(`Saúde da lavoura: ${saude}`, canvas.width / 2, 260);
+    ctx.fillText(`Pontuação: ${pontuacao}`, canvas.width / 2, 245);
+    ctx.fillText(`Melhor pontuação: ${melhorPontuacao}`, canvas.width / 2, 278);
 
     ctx.textAlign = "left";
   }
