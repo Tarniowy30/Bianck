@@ -18,7 +18,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const mensagemJogo = document.getElementById("mensagemJogo");
 
   const btnIniciar = document.getElementById("btnIniciarJogo");
-  const btnReiniciar = document.getElementById("btnReiniciarJogo");
+const btnParar = document.getElementById("btnPararJogo");
+const btnReiniciar = document.getElementById("btnReiniciarJogo");
 
   let jogoAtivo = false;
   let pontuacao = 0;
@@ -338,7 +339,14 @@ document.addEventListener("DOMContentLoaded", () => {
     clearInterval(intervaloItens);
     cancelAnimationFrame(animacaoId);
   }
+function pararJogo() {
+  if (!jogoAtivo) {
+    mensagemJogo.textContent = "O jogo ainda não foi iniciado.";
+    return;
+  }
 
+  finalizarJogo("Jogo encerrado pelo jogador.");
+}
   function reiniciarJogo() {
     iniciarJogo();
   }

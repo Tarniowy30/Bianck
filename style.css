@@ -794,3 +794,12 @@ section#inicio.hero .hero-conteudo p.etiqueta {
   text-shadow: none !important;
   box-shadow: 0 8px 22px rgba(0, 0, 0, 0.45) !important;
 }
+/* BOTÃO PARAR JOGO */
+
+#btnPararJogo {
+  background: #dc2626;
+}
+
+#btnPararJogo:hover {
+  background: #991b1b;
+}
