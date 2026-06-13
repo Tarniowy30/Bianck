@@ -1,617 +1,571 @@
-// EcoLavoura - Projeto Bianck
-// Jogo educativo para o Agrinho 2026
-// HTML + CSS + JavaScript puro
+// ===============================
+// PROJETO ECOLAVOURA - BIANCK
+// Jogo + Quiz em JavaScript
+// ===============================
 
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", () => {
+  // ===============================
+  // ELEMENTOS DO JOGO
+  // ===============================
+
   const canvas = document.getElementById("gameCanvas");
-  const ctx = canvas ? canvas.getContext("2d") : null;
+  const ctx = canvas.getContext("2d");
 
-  const pontosElemento = document.getElementById("pontos");
+  const pontuacaoElemento = document.getElementById("pontuacao");
   const saudeElemento = document.getElementById("saude");
   const tempoElemento = document.getElementById("tempo");
+  const mensagemJogo = document.getElementById("mensagemJogo");
 
-  const btnIniciar = document.getElementById("btnIniciar");
-  const btnReiniciar = document.getElementById("btnReiniciar");
+  const btnIniciar = document.getElementById("btnIniciarJogo");
+  const btnReiniciar = document.getElementById("btnReiniciarJogo");
 
-  const perguntaQuiz = document.getElementById("perguntaQuiz");
-  const opcoesQuiz = document.getElementById("opcoesQuiz");
-  const feedbackQuiz = document.getElementById("feedbackQuiz");
-  const progressoQuiz = document.getElementById("progressoQuiz");
-  const pontosQuizElemento = document.getElementById("pontosQuiz");
-  const btnProxima = document.getElementById("btnProxima");
-  const btnReiniciarQuiz = document.getElementById("btnReiniciarQuiz");
-
-  const larguraCanvas = 850;
-  const alturaCanvas = 420;
-
-  let pontos = 0;
-  let saude = 100;
-  let tempo = 60;
   let jogoAtivo = false;
+  let pontuacao = 0;
+  let saude = 100;
+  let tempo = 45;
+
   let itens = [];
+  let teclas = {};
   let intervaloTempo = null;
   let intervaloItens = null;
   let animacaoId = null;
 
-  let perguntaAtual = 0;
-  let pontosQuiz = 0;
-  let respondeuPergunta = false;
+  const jogador = {
+    x: canvas.width / 2 - 35,
+    y: canvas.height - 75,
+    largura: 70,
+    altura: 50,
+    velocidade: 8
+  };
 
-  const tiposItens = [
-    {
-      nome: "Plástico",
-      cor: "#e53935",
-      icone: "P",
-      pontos: 10,
-      dano: 8,
-      velocidade: 1.7
-    },
-    {
-      nome: "Lixo",
-      cor: "#5f6368",
-      icone: "L",
-      pontos: 8,
-      dano: 7,
-      velocidade: 1.9
-    },
-    {
-      nome: "Óleo",
-      cor: "#263238",
-      icone: "O",
-      pontos: 14,
-      dano: 12,
-      velocidade: 1.4
-    },
-    {
-      nome: "Veneno irregular",
-      cor: "#8e24aa",
-      icone: "!",
-      pontos: 18,
-      dano: 15,
-      velocidade: 1.3
-    },
-    {
-      nome: "Garrafa",
-      cor: "#1e88e5",
-      icone: "G",
-      pontos: 9,
-      dano: 6,
-      velocidade: 2
-    }
+  const itensPositivos = [
+    { emoji: "♻️", nome: "Reciclagem", pontos: 10 },
+    { emoji: "💧", nome: "Água limpa", pontos: 8 },
+    { emoji: "🌱", nome: "Muda", pontos: 12 },
+    { emoji: "🐝", nome: "Polinizador", pontos: 15 }
   ];
 
-  const perguntas = [
-    {
-      pergunta: "Qual atitude ajuda a proteger o solo da lavoura?",
-      opcoes: [
-        "Fazer queimadas frequentes",
-        "Usar plantio direto e cobertura vegetal",
-        "Jogar lixo no campo",
-        "Retirar toda a vegetação"
-      ],
-      resposta: 1,
-      explicacao: "O plantio direto e a cobertura vegetal reduzem a erosão."
-    },
-    {
-      pergunta: "Por que a água deve ser preservada no campo?",
-      opcoes: [
-        "Porque a produção rural depende dela",
-        "Porque não tem relação com a agricultura",
-        "Porque pode ser desperdiçada sem problema",
-        "Porque só é importante na cidade"
-      ],
-      resposta: 0,
-      explicacao: "A água é essencial para plantas, animais, pessoas e produção."
-    },
-    {
-      pergunta: "O que representa uma prática sustentável no agro?",
-      opcoes: [
-        "Produzir destruindo o ambiente",
-        "Equilibrar produção e preservação ambiental",
-        "Aumentar o lixo na lavoura",
-        "Usar recursos naturais sem controle"
-      ],
-      resposta: 1,
-      explicacao: "Sustentabilidade é produzir cuidando dos recursos naturais."
-    },
-    {
-      pergunta: "Qual resíduo pode contaminar o solo e a água?",
-      opcoes: [
-        "Adubo orgânico bem usado",
-        "Óleo descartado incorretamente",
-        "Cobertura vegetal",
-        "Compostagem"
-      ],
-      resposta: 1,
-      explicacao: "O óleo descartado incorretamente contamina solo, rios e nascentes."
-    },
-    {
-      pergunta: "Como a tecnologia pode ajudar no campo?",
-      opcoes: [
-        "Aumentando o desperdício",
-        "Monitorando água, solo e produção",
-        "Substituindo todo cuidado ambiental",
-        "Eliminando a necessidade de preservar"
-      ],
-      resposta: 1,
-      explicacao: "Sensores e dados ajudam o produtor a tomar melhores decisões."
-    }
+  const itensNegativos = [
+    { emoji: "🔥", nome: "Queimada", dano: 15 },
+    { emoji: "☠️", nome: "Veneno", dano: 20 },
+    { emoji: "🧪", nome: "Produto químico", dano: 15 },
+    { emoji: "🛢️", nome: "Poluição", dano: 18 }
   ];
+
+  // ===============================
+  // FUNÇÕES DO JOGO
+  // ===============================
 
   function atualizarPainel() {
-    if (pontosElemento) {
-      pontosElemento.textContent = pontos;
-    }
-
-    if (saudeElemento) {
-      saudeElemento.textContent = saude;
-    }
-
-    if (tempoElemento) {
-      tempoElemento.textContent = tempo;
-    }
+    pontuacaoElemento.textContent = pontuacao;
+    saudeElemento.textContent = saude;
+    tempoElemento.textContent = tempo;
   }
 
-  function limparCanvas() {
-    if (!ctx) {
-      return;
-    }
+  function desenharCenario() {
+    // Céu
+    ctx.fillStyle = "#bbf7d0";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    ctx.clearRect(0, 0, larguraCanvas, alturaCanvas);
-  }
-
-  function desenharFundo() {
-    if (!ctx) {
-      return;
-    }
-
-    ctx.fillStyle = "#bdefff";
-    ctx.fillRect(0, 0, larguraCanvas, 190);
-
-    ctx.fillStyle = "#75c76a";
-    ctx.fillRect(0, 190, larguraCanvas, 105);
-
-    ctx.fillStyle = "#8b5a2b";
-    ctx.fillRect(0, 295, larguraCanvas, 125);
-
-    ctx.fillStyle = "#ffd166";
+    // Sol
     ctx.beginPath();
-    ctx.arc(760, 55, 35, 0, Math.PI * 2);
+    ctx.arc(80, 70, 38, 0, Math.PI * 2);
+    ctx.fillStyle = "#facc15";
     ctx.fill();
 
-    ctx.fillStyle = "#ffffff";
-    ctx.beginPath();
-    ctx.arc(90, 70, 24, 0, Math.PI * 2);
-    ctx.arc(120, 62, 30, 0, Math.PI * 2);
-    ctx.arc(150, 72, 24, 0, Math.PI * 2);
-    ctx.fill();
+    // Nuvens
+    desenharNuvem(210, 70);
+    desenharNuvem(680, 95);
 
-    ctx.fillStyle = "#2f80ed";
-    ctx.fillRect(0, 250, larguraCanvas, 18);
+    // Campo
+    ctx.fillStyle = "#65a30d";
+    ctx.fillRect(0, 250, canvas.width, 200);
 
-    ctx.fillStyle = "#3da64a";
-
-    for (let x = 20; x < larguraCanvas; x += 45) {
-      ctx.fillRect(x, 330, 25, 8);
-      ctx.fillRect(x + 8, 355, 25, 8);
-      ctx.fillRect(x + 16, 380, 25, 8);
-    }
-
-    ctx.fillStyle = "#17351f";
-    ctx.font = "18px Arial";
-    ctx.fillText("Clique nos resíduos para proteger água, solo e plantas.", 20, 32);
-  }
-
-  function desenharTelaInicial() {
-    if (!ctx) {
-      return;
-    }
-
-    limparCanvas();
-    desenharFundo();
-
-    ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
-    ctx.fillRect(165, 95, 520, 210);
-
-    ctx.strokeStyle = "#237a3b";
+    // Linhas da lavoura
+    ctx.strokeStyle = "#3f6212";
     ctx.lineWidth = 4;
-    ctx.strokeRect(165, 95, 520, 210);
 
-    ctx.fillStyle = "#145327";
-    ctx.font = "bold 34px Arial";
-    ctx.textAlign = "center";
-    ctx.fillText("EcoLavoura", larguraCanvas / 2, 150);
+    for (let i = 0; i < 8; i++) {
+      ctx.beginPath();
+      ctx.moveTo(i * 130 - 120, canvas.height);
+      ctx.lineTo(i * 110 + 80, 250);
+      ctx.stroke();
+    }
 
-    ctx.font = "20px Arial";
-    ctx.fillText("Missão Lavoura Sustentável", larguraCanvas / 2, 190);
+    // Cerca
+    ctx.fillStyle = "#92400e";
+    for (let x = 0; x < canvas.width; x += 90) {
+      ctx.fillRect(x, 230, 12, 55);
+    }
 
-    ctx.font = "17px Arial";
-    ctx.fillText("Clique em Iniciar jogo para começar.", larguraCanvas / 2, 230);
-    ctx.fillText("Remova os resíduos antes que prejudiquem a lavoura.", larguraCanvas / 2, 260);
+    ctx.fillRect(0, 245, canvas.width, 8);
+  }
 
-    ctx.textAlign = "left";
+  function desenharNuvem(x, y) {
+    ctx.fillStyle = "rgba(255, 255, 255, 0.85)";
+    ctx.beginPath();
+    ctx.arc(x, y, 25, 0, Math.PI * 2);
+    ctx.arc(x + 28, y - 10, 30, 0, Math.PI * 2);
+    ctx.arc(x + 60, y, 25, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  function desenharJogador() {
+    // Corpo do trator/carrinho ecológico
+    ctx.fillStyle = "#166534";
+    ctx.fillRect(jogador.x + 10, jogador.y + 15, 50, 25);
+
+    ctx.fillStyle = "#22c55e";
+    ctx.fillRect(jogador.x + 25, jogador.y, 30, 25);
+
+    // Rodas
+    ctx.fillStyle = "#1f2937";
+    ctx.beginPath();
+    ctx.arc(jogador.x + 20, jogador.y + 45, 12, 0, Math.PI * 2);
+    ctx.arc(jogador.x + 55, jogador.y + 45, 12, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Símbolo
+    ctx.font = "24px Arial";
+    ctx.fillText("🌱", jogador.x + 24, jogador.y + 29);
   }
 
   function criarItem() {
-    if (!jogoAtivo) {
-      return;
+    const tipoPositivo = Math.random() > 0.38;
+    let base;
+
+    if (tipoPositivo) {
+      base = itensPositivos[Math.floor(Math.random() * itensPositivos.length)];
+    } else {
+      base = itensNegativos[Math.floor(Math.random() * itensNegativos.length)];
     }
 
-    const tipo = tiposItens[Math.floor(Math.random() * tiposItens.length)];
-
     const item = {
-      x: Math.random() * (larguraCanvas - 80) + 40,
+      x: Math.random() * (canvas.width - 50) + 25,
       y: -40,
-      tamanho: Math.floor(Math.random() * 12) + 34,
-      nome: tipo.nome,
-      cor: tipo.cor,
-      icone: tipo.icone,
-      pontos: tipo.pontos,
-      dano: tipo.dano,
-      velocidade: tipo.velocidade + Math.random() * 0.8
+      tamanho: 38,
+      velocidade: Math.random() * 2 + 2.2,
+      positivo: tipoPositivo,
+      ...base
     };
 
     itens.push(item);
   }
 
-  function desenharItem(item) {
-    if (!ctx) {
-      return;
-    }
-
-    ctx.fillStyle = item.cor;
-    ctx.beginPath();
-    ctx.arc(item.x, item.y, item.tamanho / 2, 0, Math.PI * 2);
-    ctx.fill();
-
-    ctx.fillStyle = "#ffffff";
-    ctx.font = "bold 20px Arial";
+  function desenharItens() {
+    ctx.font = "36px Arial";
     ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.fillText(item.icone, item.x, item.y);
+
+    itens.forEach((item) => {
+      ctx.fillText(item.emoji, item.x, item.y);
+    });
 
     ctx.textAlign = "left";
-    ctx.textBaseline = "alphabetic";
   }
 
-  function atualizarItens() {
-    const itensRestantes = [];
-
-    for (let i = 0; i < itens.length; i++) {
-      const item = itens[i];
+  function moverItens() {
+    itens.forEach((item) => {
       item.y += item.velocidade;
+    });
 
-      if (item.y > alturaCanvas + 30) {
-        saude -= item.dano;
+    itens = itens.filter((item) => item.y < canvas.height + 50);
+  }
 
-        if (saude < 0) {
-          saude = 0;
+  function moverJogador() {
+    if (teclas["ArrowLeft"] || teclas["a"] || teclas["A"]) {
+      jogador.x -= jogador.velocidade;
+    }
+
+    if (teclas["ArrowRight"] || teclas["d"] || teclas["D"]) {
+      jogador.x += jogador.velocidade;
+    }
+
+    if (jogador.x < 0) {
+      jogador.x = 0;
+    }
+
+    if (jogador.x + jogador.largura > canvas.width) {
+      jogador.x = canvas.width - jogador.largura;
+    }
+  }
+
+  function verificarColisoes() {
+    itens.forEach((item, index) => {
+      const colidiu =
+        item.x > jogador.x &&
+        item.x < jogador.x + jogador.largura &&
+        item.y > jogador.y &&
+        item.y < jogador.y + jogador.altura;
+
+      if (colidiu) {
+        if (item.positivo) {
+          pontuacao += item.pontos;
+          mensagemJogo.textContent = `Boa! Você coletou ${item.nome} e ajudou a lavoura.`;
+        } else {
+          saude -= item.dano;
+
+          if (saude < 0) {
+            saude = 0;
+          }
+
+          mensagemJogo.textContent = `Cuidado! ${item.nome} prejudicou a lavoura.`;
         }
-      } else {
-        itensRestantes.push(item);
+
+        itens.splice(index, 1);
+        atualizarPainel();
+
+        if (saude <= 0) {
+          finalizarJogo("A saúde da lavoura chegou a zero. Tente novamente!");
+        }
       }
-    }
-
-    itens = itensRestantes;
+    });
   }
 
-  function desenharFimDeJogo() {
-    if (!ctx) {
-      return;
-    }
+  function loopJogo() {
+    if (!jogoAtivo) return;
 
-    limparCanvas();
-    desenharFundo();
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    ctx.fillStyle = "rgba(255, 255, 255, 0.92)";
-    ctx.fillRect(140, 80, 570, 260);
+    desenharCenario();
+    moverJogador();
+    moverItens();
+    verificarColisoes();
+    desenharItens();
+    desenharJogador();
 
-    ctx.strokeStyle = "#237a3b";
-    ctx.lineWidth = 4;
-    ctx.strokeRect(140, 80, 570, 260);
-
-    ctx.fillStyle = "#145327";
-    ctx.font = "bold 32px Arial";
-    ctx.textAlign = "center";
-
-    if (saude <= 0) {
-      ctx.fillText("A lavoura precisa de ajuda!", larguraCanvas / 2, 140);
-    } else {
-      ctx.fillText("Missão finalizada!", larguraCanvas / 2, 140);
-    }
-
-    ctx.font = "20px Arial";
-    ctx.fillText("Pontuação final: " + pontos, larguraCanvas / 2, 190);
-    ctx.fillText("Saúde da lavoura: " + saude, larguraCanvas / 2, 225);
-
-    if (pontos >= 180 && saude >= 60) {
-      ctx.fillText("Resultado: Guardião Sustentável do Campo", larguraCanvas / 2, 270);
-    } else if (pontos >= 100) {
-      ctx.fillText("Resultado: Protetor da Lavoura", larguraCanvas / 2, 270);
-    } else {
-      ctx.fillText("Resultado: Continue cuidando do ambiente", larguraCanvas / 2, 270);
-    }
-
-    ctx.textAlign = "left";
-  }
-
-  function animarJogo() {
-    if (!ctx) {
-      return;
-    }
-
-    limparCanvas();
-    desenharFundo();
-
-    if (!jogoAtivo) {
-      desenharFimDeJogo();
-      return;
-    }
-
-    atualizarItens();
-
-    for (let i = 0; i < itens.length; i++) {
-      desenharItem(itens[i]);
-    }
-
-    if (saude <= 0 || tempo <= 0) {
-      finalizarJogo();
-      return;
-    }
-
-    atualizarPainel();
-    animacaoId = requestAnimationFrame(animarJogo);
+    animacaoId = requestAnimationFrame(loopJogo);
   }
 
   function iniciarJogo() {
-    if (!ctx) {
-      return;
-    }
+    cancelarJogoAnterior();
 
-    pontos = 0;
-    saude = 100;
-    tempo = 60;
-    itens = [];
     jogoAtivo = true;
+    pontuacao = 0;
+    saude = 100;
+    tempo = 45;
+    itens = [];
+
+    jogador.x = canvas.width / 2 - jogador.largura / 2;
 
     atualizarPainel();
 
-    if (intervaloTempo) {
-      clearInterval(intervaloTempo);
-    }
+    mensagemJogo.textContent =
+      "Use as setas do teclado ou toque/mouse para mover o carrinho ecológico.";
 
-    if (intervaloItens) {
-      clearInterval(intervaloItens);
-    }
+    intervaloTempo = setInterval(() => {
+      if (!jogoAtivo) return;
 
-    if (animacaoId) {
-      cancelAnimationFrame(animacaoId);
-    }
-
-    intervaloTempo = setInterval(function () {
-      if (!jogoAtivo) {
-        return;
-      }
-
-      tempo -= 1;
-
-      if (tempo < 0) {
-        tempo = 0;
-      }
-
+      tempo--;
       atualizarPainel();
 
       if (tempo <= 0) {
-        finalizarJogo();
+        finalizarJogo("Tempo encerrado!");
       }
     }, 1000);
 
-    intervaloItens = setInterval(function () {
-      criarItem();
-    }, 850);
+    intervaloItens = setInterval(() => {
+      if (jogoAtivo) {
+        criarItem();
+      }
+    }, 750);
 
-    animarJogo();
+    loopJogo();
   }
 
-  function finalizarJogo() {
+  function finalizarJogo(motivo) {
     jogoAtivo = false;
 
-    if (intervaloTempo) {
-      clearInterval(intervaloTempo);
+    clearInterval(intervaloTempo);
+    clearInterval(intervaloItens);
+    cancelAnimationFrame(animacaoId);
+
+    let mensagemFinal = "";
+
+    if (pontuacao >= 180 && saude >= 60) {
+      mensagemFinal = "Excelente! Você salvou a lavoura e protegeu o meio ambiente.";
+    } else if (pontuacao >= 90 && saude >= 30) {
+      mensagemFinal = "Bom trabalho! A lavoura foi protegida, mas ainda pode melhorar.";
+    } else {
+      mensagemFinal = "A lavoura precisa de mais cuidado. Tente novamente!";
     }
 
-    if (intervaloItens) {
-      clearInterval(intervaloItens);
-    }
+    mensagemJogo.textContent = `${motivo} Pontuação final: ${pontuacao}. ${mensagemFinal}`;
 
-    if (animacaoId) {
-      cancelAnimationFrame(animacaoId);
-    }
+    desenharCenario();
+    desenharJogador();
 
-    atualizarPainel();
-    desenharFimDeJogo();
+    ctx.fillStyle = "rgba(20, 83, 45, 0.88)";
+    ctx.fillRect(120, 135, 660, 160);
+
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "bold 34px Arial";
+    ctx.textAlign = "center";
+    ctx.fillText("Fim de jogo", canvas.width / 2, 185);
+
+    ctx.font = "22px Arial";
+    ctx.fillText(`Pontuação: ${pontuacao}`, canvas.width / 2, 225);
+    ctx.fillText(`Saúde da lavoura: ${saude}`, canvas.width / 2, 260);
+
+    ctx.textAlign = "left";
+  }
+
+  function cancelarJogoAnterior() {
+    jogoAtivo = false;
+    clearInterval(intervaloTempo);
+    clearInterval(intervaloItens);
+    cancelAnimationFrame(animacaoId);
   }
 
   function reiniciarJogo() {
     iniciarJogo();
   }
 
-  function verificarCliqueCanvas(evento) {
-    if (!jogoAtivo || !canvas) {
-      return;
-    }
+  function desenharTelaInicial() {
+    desenharCenario();
 
-    const rect = canvas.getBoundingClientRect();
-    const escalaX = canvas.width / rect.width;
-    const escalaY = canvas.height / rect.height;
+    ctx.fillStyle = "rgba(255, 255, 255, 0.92)";
+    ctx.fillRect(135, 110, 630, 210);
 
-    const mouseX = (evento.clientX - rect.left) * escalaX;
-    const mouseY = (evento.clientY - rect.top) * escalaY;
+    ctx.strokeStyle = "#166534";
+    ctx.lineWidth = 4;
+    ctx.strokeRect(135, 110, 630, 210);
 
-    for (let i = itens.length - 1; i >= 0; i--) {
-      const item = itens[i];
-      const distancia = Math.hypot(mouseX - item.x, mouseY - item.y);
+    ctx.fillStyle = "#14532d";
+    ctx.font = "bold 36px Arial";
+    ctx.textAlign = "center";
+    ctx.fillText("EcoLavoura", canvas.width / 2, 170);
 
-      if (distancia <= item.tamanho / 2) {
-        pontos += item.pontos;
-        itens.splice(i, 1);
-        atualizarPainel();
-        return;
-      }
-    }
+    ctx.font = "22px Arial";
+    ctx.fillText("Proteja a lavoura e cuide do futuro!", canvas.width / 2, 215);
+
+    ctx.font = "18px Arial";
+    ctx.fillText("Colete ♻️ 💧 🌱 🐝 e evite 🔥 ☠️ 🧪 🛢️", canvas.width / 2, 260);
+
+    ctx.textAlign = "left";
   }
 
-  function carregarPergunta() {
-    if (!perguntaQuiz || !opcoesQuiz || !feedbackQuiz) {
-      return;
+  // ===============================
+  // CONTROLES
+  // ===============================
+
+  document.addEventListener("keydown", (evento) => {
+    teclas[evento.key] = true;
+  });
+
+  document.addEventListener("keyup", (evento) => {
+    teclas[evento.key] = false;
+  });
+
+  canvas.addEventListener("mousemove", (evento) => {
+    const retangulo = canvas.getBoundingClientRect();
+    const escalaX = canvas.width / retangulo.width;
+    const mouseX = (evento.clientX - retangulo.left) * escalaX;
+
+    jogador.x = mouseX - jogador.largura / 2;
+  });
+
+  canvas.addEventListener("touchmove", (evento) => {
+    evento.preventDefault();
+
+    const toque = evento.touches[0];
+    const retangulo = canvas.getBoundingClientRect();
+    const escalaX = canvas.width / retangulo.width;
+    const toqueX = (toque.clientX - retangulo.left) * escalaX;
+
+    jogador.x = toqueX - jogador.largura / 2;
+  });
+
+  btnIniciar.addEventListener("click", iniciarJogo);
+  btnReiniciar.addEventListener("click", reiniciarJogo);
+
+  desenharTelaInicial();
+  atualizarPainel();
+
+  // ===============================
+  // QUIZ
+  // ===============================
+
+  const contadorPergunta = document.getElementById("contadorPergunta");
+  const pontuacaoQuizElemento = document.getElementById("pontuacaoQuiz");
+  const perguntaQuiz = document.getElementById("perguntaQuiz");
+  const alternativasQuiz = document.getElementById("alternativasQuiz");
+  const resultadoQuiz = document.getElementById("resultadoQuiz");
+  const btnProximaPergunta = document.getElementById("btnProximaPergunta");
+
+  const perguntas = [
+    {
+      pergunta: "Qual atitude ajuda a proteger o solo da lavoura?",
+      alternativas: [
+        "Jogar lixo no campo",
+        "Preservar a cobertura vegetal",
+        "Queimar resíduos",
+        "Desperdiçar água"
+      ],
+      correta: 1
+    },
+    {
+      pergunta: "Por que as abelhas são importantes para o campo?",
+      alternativas: [
+        "Porque prejudicam as plantas",
+        "Porque aumentam a poluição",
+        "Porque ajudam na polinização",
+        "Porque secam o solo"
+      ],
+      correta: 2
+    },
+    {
+      pergunta: "O que significa sustentabilidade?",
+      alternativas: [
+        "Usar os recursos naturais sem cuidado",
+        "Produzir hoje sem prejudicar o futuro",
+        "Desmatar para plantar mais",
+        "Ignorar a natureza"
+      ],
+      correta: 1
+    },
+    {
+      pergunta: "Qual prática ajuda a economizar água na agricultura?",
+      alternativas: [
+        "Irrigação consciente",
+        "Vazamentos sem conserto",
+        "Uso exagerado de água",
+        "Jogar óleo no solo"
+      ],
+      correta: 0
+    },
+    {
+      pergunta: "Qual item deve ser retirado corretamente do ambiente?",
+      alternativas: [
+        "Árvore nativa",
+        "Abelha",
+        "Lixo reciclável",
+        "Água limpa"
+      ],
+      correta: 2
     }
+  ];
 
-    if (!progressoQuiz || !pontosQuizElemento) {
-      return;
-    }
+  let perguntaAtual = -1;
+  let pontosQuiz = 0;
+  let respondeu = false;
 
-    const pergunta = perguntas[perguntaAtual];
-    respondeuPergunta = false;
-
-    progressoQuiz.textContent = "Pergunta " + (perguntaAtual + 1) + " de " + perguntas.length;
-    pontosQuizElemento.textContent = pontosQuiz;
-    perguntaQuiz.textContent = pergunta.pergunta;
-    feedbackQuiz.textContent = "";
-    feedbackQuiz.className = "feedback";
-    opcoesQuiz.innerHTML = "";
-
-    for (let i = 0; i < pergunta.opcoes.length; i++) {
-      const botao = document.createElement("button");
-      botao.type = "button";
-      botao.textContent = pergunta.opcoes[i];
-      botao.className = "opcao-quiz";
-
-      botao.addEventListener("click", function () {
-        responderPergunta(i);
-      });
-
-      opcoesQuiz.appendChild(botao);
-    }
-
-    if (btnProxima) {
-      btnProxima.disabled = true;
-    }
-  }
-
-  function responderPergunta(indiceEscolhido) {
-    if (respondeuPergunta) {
-      return;
-    }
-
-    const pergunta = perguntas[perguntaAtual];
-    const botoes = document.querySelectorAll(".opcao-quiz");
-
-    respondeuPergunta = true;
-
-    for (let i = 0; i < botoes.length; i++) {
-      botoes[i].disabled = true;
-
-      if (i === pergunta.resposta) {
-        botoes[i].classList.add("correta");
-      }
-
-      if (i === indiceEscolhido && indiceEscolhido !== pergunta.resposta) {
-        botoes[i].classList.add("errada");
-      }
-    }
-
-    if (indiceEscolhido === pergunta.resposta) {
-      pontosQuiz += 10;
-      feedbackQuiz.textContent = "Resposta correta! " + pergunta.explicacao;
-      feedbackQuiz.className = "feedback sucesso";
+  function atualizarTopoQuiz() {
+    if (perguntaAtual < 0) {
+      contadorPergunta.textContent = `Pergunta 1 de ${perguntas.length}`;
     } else {
-      feedbackQuiz.textContent = "Resposta incorreta. " + pergunta.explicacao;
-      feedbackQuiz.className = "feedback erro";
+      contadorPergunta.textContent = `Pergunta ${perguntaAtual + 1} de ${perguntas.length}`;
     }
 
-    pontosQuizElemento.textContent = pontosQuiz;
+    pontuacaoQuizElemento.textContent = `${pontosQuiz} pontos`;
+  }
 
-    if (btnProxima) {
-      btnProxima.disabled = false;
+  function mostrarPergunta() {
+    respondeu = false;
+    resultadoQuiz.textContent = "";
+
+    const dados = perguntas[perguntaAtual];
+
+    perguntaQuiz.textContent = dados.pergunta;
+    alternativasQuiz.innerHTML = "";
+
+    dados.alternativas.forEach((alternativa, index) => {
+      const botao = document.createElement("button");
+      botao.textContent = alternativa;
+      botao.type = "button";
+
+      botao.addEventListener("click", () => responderPergunta(index, botao));
+
+      alternativasQuiz.appendChild(botao);
+    });
+
+    btnProximaPergunta.textContent = "Responder para continuar";
+    btnProximaPergunta.disabled = true;
+
+    atualizarTopoQuiz();
+  }
+
+  function responderPergunta(indiceEscolhido, botaoEscolhido) {
+    if (respondeu) return;
+
+    respondeu = true;
+
+    const dados = perguntas[perguntaAtual];
+    const botoes = alternativasQuiz.querySelectorAll("button");
+
+    botoes.forEach((botao, index) => {
+      botao.disabled = true;
+
+      if (index === dados.correta) {
+        botao.classList.add("correta");
+      }
+
+      if (index === indiceEscolhido && index !== dados.correta) {
+        botao.classList.add("errada");
+      }
+    });
+
+    if (indiceEscolhido === dados.correta) {
+      pontosQuiz += 20;
+      resultadoQuiz.textContent = "Resposta correta! Você entende de sustentabilidade.";
+    } else {
+      resultadoQuiz.textContent = "Resposta incorreta. Observe a alternativa correta marcada em verde.";
+    }
+
+    pontuacaoQuizElemento.textContent = `${pontosQuiz} pontos`;
+    btnProximaPergunta.disabled = false;
+
+    if (perguntaAtual === perguntas.length - 1) {
+      btnProximaPergunta.textContent = "Ver resultado final";
+    } else {
+      btnProximaPergunta.textContent = "Próxima pergunta";
     }
   }
 
   function proximaPergunta() {
-    if (!respondeuPergunta) {
+    if (perguntaAtual === -1) {
+      perguntaAtual = 0;
+      pontosQuiz = 0;
+      mostrarPergunta();
       return;
     }
 
-    perguntaAtual += 1;
+    if (!respondeu) return;
+
+    perguntaAtual++;
 
     if (perguntaAtual >= perguntas.length) {
       finalizarQuiz();
-      return;
+    } else {
+      mostrarPergunta();
     }
-
-    carregarPergunta();
   }
 
   function finalizarQuiz() {
-    if (!perguntaQuiz || !opcoesQuiz || !feedbackQuiz || !progressoQuiz) {
-      return;
-    }
+    alternativasQuiz.innerHTML = "";
 
-    progressoQuiz.textContent = "Quiz finalizado";
-    perguntaQuiz.textContent = "Você fez " + pontosQuiz + " pontos no Quiz Sustentável.";
-    opcoesQuiz.innerHTML = "";
+    contadorPergunta.textContent = "Quiz finalizado";
+    pontuacaoQuizElemento.textContent = `${pontosQuiz} pontos`;
 
-    if (pontosQuiz >= 40) {
-      feedbackQuiz.textContent = "Excelente! Você entende a sustentabilidade no campo.";
-      feedbackQuiz.className = "feedback sucesso";
+    let mensagem = "";
+
+    if (pontosQuiz >= 80) {
+      mensagem = "Parabéns! Você demonstrou ótimo conhecimento sobre sustentabilidade.";
+    } else if (pontosQuiz >= 50) {
+      mensagem = "Bom resultado! Continue aprendendo sobre o cuidado com o campo.";
     } else {
-      feedbackQuiz.textContent = "Continue estudando. O futuro depende de boas escolhas.";
-      feedbackQuiz.className = "feedback erro";
+      mensagem = "Continue estudando! Pequenas atitudes ajudam a proteger o planeta.";
     }
 
-    if (btnProxima) {
-      btnProxima.disabled = true;
-    }
+    perguntaQuiz.textContent = `Resultado final: ${pontosQuiz} pontos.`;
+    resultadoQuiz.textContent = mensagem;
+
+    btnProximaPergunta.textContent = "Refazer quiz";
+
+    perguntaAtual = -1;
+    respondeu = false;
   }
 
-  function reiniciarQuiz() {
-    perguntaAtual = 0;
-    pontosQuiz = 0;
-    respondeuPergunta = false;
-    carregarPergunta();
-  }
+  btnProximaPergunta.addEventListener("click", proximaPergunta);
 
-  function configurarEventos() {
-    if (canvas) {
-      canvas.addEventListener("click", verificarCliqueCanvas);
-    }
-
-    if (btnIniciar) {
-      btnIniciar.addEventListener("click", iniciarJogo);
-    }
-
-    if (btnReiniciar) {
-      btnReiniciar.addEventListener("click", reiniciarJogo);
-    }
-
-    if (btnProxima) {
-      btnProxima.addEventListener("click", proximaPergunta);
-    }
-
-    if (btnReiniciarQuiz) {
-      btnReiniciarQuiz.addEventListener("click", reiniciarQuiz);
-    }
-  }
-
-  function iniciarProjeto() {
-    atualizarPainel();
-
-    if (ctx) {
-      desenharTelaInicial();
-    }
-
-    configurarEventos();
-    carregarPergunta();
-  }
-
-  iniciarProjeto();
+  atualizarTopoQuiz();
 });
