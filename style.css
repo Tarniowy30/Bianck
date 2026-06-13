@@ -687,3 +687,76 @@ canvas {
     text-align: left;
   }
 }
+/* CORREÇÃO DE CONTRASTE DAS LETRAS */
+
+body {
+  color: #12351f;
+}
+
+.hero p,
+.hero-card p,
+.card p,
+.info-box p,
+.programacao-box p,
+.programacao-box li,
+.instrucoes-box p,
+.mensagem-box p,
+.creditos-box p {
+  color: #1f3d2b;
+}
+
+.titulo-secao p {
+  color: #0f6b32;
+}
+
+.card h3,
+.info-box h3,
+.programacao-box h3,
+.instrucoes-box h3,
+.quiz-card h3,
+.titulo-secao h2 {
+  color: #0f3d22;
+}
+
+.menu a {
+  color: #ffffff;
+}
+
+.menu a:hover {
+  color: #d9f99d;
+}
+
+.etiqueta {
+  background: #0f5132;
+  color: #ffffff;
+}
+
+.botao.secundario {
+  color: #0f5132;
+  background: #ffffff;
+  border: 2px solid #0f5132;
+}
+
+.placar span {
+  color: #0f5132;
+}
+
+.placar strong {
+  color: #0f3d22;
+}
+
+.mensagem-jogo {
+  color: #0f3d22;
+}
+
+.quiz-topo span {
+  color: #0f5132;
+}
+
+.alternativas button {
+  color: #0f3d22;
+}
+
+.rodape {
+  color: #ffffff;
+}
