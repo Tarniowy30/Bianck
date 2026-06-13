@@ -1,25 +1,28 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>EcoLavoura - Futuro Sustentável</title>
 
-  <meta name="description" content="Projeto Agrinho 2026 sobre agro forte, futuro sustentável e equilíbrio entre produção e meio ambiente." />
-  <meta name="keywords" content="agrinho, sustentabilidade, agro, meio ambiente, programação" />
+  <meta name="description" content="Projeto Agrinho 2026 - EcoLavoura: agro forte, futuro sustentável, equilíbrio entre produção e meio ambiente.">
+  <meta name="keywords" content="agrinho, sustentabilidade, agro, meio ambiente, programação">
 
-  <link rel="stylesheet" href="css/style.css" />
-  <script src="js/script.js" defer></script>
+  <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
-  <header class="cabecalho">
-    <div class="container menu-area">
-      <h1>🌱 EcoLavoura</h1>
+  <header class="topo">
+    <div class="container barra-superior">
+      <a href="#inicio" class="logo">
+        <span>🌱</span>
+        <strong>EcoLavoura</strong>
+      </a>
 
-      <nav>
+      <nav class="menu">
         <a href="#inicio">Início</a>
+        <a href="#sobre">Sobre</a>
         <a href="#jogo">Jogo</a>
         <a href="#quiz">Quiz</a>
         <a href="#creditos">Créditos</a>
@@ -29,115 +32,201 @@
 
   <main>
     <section class="hero" id="inicio">
-      <div class="container hero-grid">
+      <div class="container grid-hero">
         <div>
-          <span class="selo">Agrinho 2026 • Programação Front-End</span>
-
-          <h2>Agro forte, futuro sustentável</h2>
+          <span class="selo">Agrinho 2026</span>
+          <h1>Agro forte, futuro sustentável</h1>
 
           <p>
-            Ajude a proteger a lavoura, recolhendo resíduos e preservando os elementos naturais.
-            O objetivo é mostrar que produção agrícola e meio ambiente podem caminhar juntos.
+            Ajude a proteger a lavoura, recolhendo resíduos e preservando os
+            elementos naturais. O EcoLavoura mostra que produção agrícola e
+            meio ambiente podem caminhar juntos.
           </p>
 
           <div class="botoes">
-            <a href="#jogo" class="botao principal">🎮 Jogar agora</a>
-            <a href="#quiz" class="botao secundario">🧠 Fazer quiz</a>
+            <a href="#jogo" class="botao primario">Jogar agora</a>
+            <a href="#quiz" class="botao secundario">Fazer quiz</a>
           </div>
         </div>
 
-        <div class="card-info">
-          <h3>Missão</h3>
+        <div class="card-destaque">
+          <div class="icone-grande">🚜</div>
+          <h2>Missão</h2>
           <p>
-            Remover resíduos da lavoura, proteger água, solo e plantas, e aprender práticas
-            sustentáveis para o futuro do campo.
+            Proteger o solo, a água e a biodiversidade para manter uma lavoura
+            produtiva e sustentável.
           </p>
         </div>
       </div>
     </section>
 
-    <section class="secao" id="jogo">
+    <section class="secao fundo-claro" id="sobre">
       <div class="container">
-        <span class="selo">Jogo educativo</span>
-
-        <h2>Missão Lavoura Sustentável</h2>
+        <span class="selo">Objetivo do projeto</span>
+        <h2>Por que o EcoLavoura foi criado?</h2>
 
         <p class="texto-central">
-          Clique nos resíduos que caem na lavoura. Evite clicar nos elementos naturais.
-          Cada acerto aumenta sua pontuação e ajuda a manter a lavoura saudável.
+          O projeto usa tecnologia, jogo e quiz para ensinar que o agro forte
+          depende do equilíbrio entre produção, preservação ambiental e uso
+          consciente dos recursos naturais.
         </p>
 
-        <div class="painel-jogo">
-          <div class="status">
-            <p>Pontos: <strong id="pontos">0</strong></p>
-            <p>Saúde da lavoura: <strong id="saude">100</strong>%</p>
-            <p>Tempo: <strong id="tempo">45</strong>s</p>
+        <div class="cards">
+          <article class="card">
+            <h3>🌾 Produção consciente</h3>
+            <p>
+              A agricultura precisa produzir alimentos com responsabilidade,
+              cuidando do solo e evitando desperdícios.
+            </p>
+          </article>
+
+          <article class="card">
+            <h3>💧 Água preservada</h3>
+            <p>
+              Rios, nascentes e matas ciliares são essenciais para o campo e
+              para a vida.
+            </p>
+          </article>
+
+          <article class="card">
+            <h3>📡 Tecnologia no campo</h3>
+            <p>
+              A programação e os dados ajudam o produtor a tomar decisões mais
+              sustentáveis.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="secao" id="instrucoes">
+      <div class="container">
+        <span class="selo">Como jogar</span>
+        <h2>Instruções</h2>
+
+        <div class="lista-instrucoes">
+          <div class="instrucao">
+            <strong>1</strong>
+            <p>Clique em iniciar jogo.</p>
           </div>
 
-          <canvas id="canvasJogo"></canvas>
+          <div class="instrucao">
+            <strong>2</strong>
+            <p>Clique nos resíduos que caem na lavoura.</p>
+          </div>
 
-          <div class="botoes">
-            <button id="btnIniciar" class="botao principal" type="button">Iniciar jogo</button>
+          <div class="instrucao">
+            <strong>3</strong>
+            <p>Não clique nos elementos naturais.</p>
+          </div>
+
+          <div class="instrucao">
+            <strong>4</strong>
+            <p>Mantenha a saúde da lavoura até o tempo acabar.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="secao fundo-verde" id="jogo">
+      <div class="container">
+        <span class="selo claro">Jogo educativo</span>
+        <h2>Missão Lavoura Sustentável</h2>
+
+        <p class="texto-central claro">
+          Clique nos resíduos para limpar a lavoura. Evite clicar na água,
+          folhas e abelhas, pois elas fazem parte do equilíbrio ambiental.
+        </p>
+
+        <div class="area-jogo">
+          <div class="painel-jogo">
+            <div>
+              <span>Pontos</span>
+              <strong id="pontos">0</strong>
+            </div>
+
+            <div>
+              <span>Saúde</span>
+              <strong id="saude">100%</strong>
+            </div>
+
+            <div>
+              <span>Tempo</span>
+              <strong id="tempo">45s</strong>
+            </div>
+          </div>
+
+          <canvas id="telaJogo" width="900" height="450">
+            Seu navegador não suporta canvas.
+          </canvas>
+
+          <div class="controles">
+            <button id="btnIniciar" class="botao primario" type="button">Iniciar jogo</button>
             <button id="btnReiniciar" class="botao secundario" type="button">Reiniciar</button>
           </div>
 
           <p id="mensagemJogo" class="mensagem">
-            Clique em iniciar para começar a missão.
+            Clique em iniciar para começar.
           </p>
         </div>
       </div>
     </section>
 
-    <section class="secao fundo-claro" id="quiz">
+    <section class="secao" id="quiz">
       <div class="container">
         <span class="selo">Quiz sustentável</span>
-
         <h2>Teste seus conhecimentos</h2>
-
-        <p class="texto-central">
-          Responda às perguntas sobre sustentabilidade, produção agrícola, água e solo.
-        </p>
 
         <div class="quiz-card">
           <div class="quiz-topo">
-            <span id="progressoQuiz">Pergunta 1 de 5</span>
-            <span>Pontos: <strong id="pontosQuiz">0</strong></span>
+            <span>Pergunta <b id="perguntaAtual">1</b> de <b id="totalPerguntas">5</b></span>
+            <span>Pontos: <b id="pontosQuiz">0</b></span>
           </div>
 
-          <h3 id="perguntaQuiz">Pergunta</h3>
+          <h3 id="perguntaTexto">Pergunta</h3>
 
-          <div id="opcoesQuiz" class="opcoes"></div>
+          <div id="opcoesQuiz" class="opcoes-quiz"></div>
 
-          <p id="feedbackQuiz" class="feedback"></p>
+          <p id="feedbackQuiz" class="feedback">
+            Escolha uma alternativa.
+          </p>
 
-          <div class="botoes">
-            <button id="btnProxima" class="botao principal" type="button">Próxima</button>
+          <div class="controles">
+            <button id="btnProxima" class="botao primario" type="button" disabled>Próxima</button>
             <button id="btnReiniciarQuiz" class="botao secundario" type="button">Reiniciar quiz</button>
           </div>
         </div>
       </div>
     </section>
 
-    <section class="secao" id="creditos">
+    <section class="secao fundo-claro" id="creditos">
       <div class="container">
         <span class="selo">Autoria</span>
-
         <h2>Créditos do projeto</h2>
 
         <div class="cards">
           <article class="card">
             <h3>💻 Código</h3>
-            <p>Projeto desenvolvido com HTML, CSS e JavaScript separados.</p>
+            <p>
+              Projeto desenvolvido com HTML, CSS e JavaScript separados, sem uso
+              de bibliotecas ou frameworks externos.
+            </p>
           </article>
 
           <article class="card">
-            <h3>🌾 Tema</h3>
-            <p>Agro forte, futuro sustentável: equilíbrio entre produção e meio ambiente.</p>
+            <h3>🌎 Tema</h3>
+            <p>
+              Agro forte, futuro sustentável: equilíbrio entre produção e meio
+              ambiente.
+            </p>
           </article>
 
           <article class="card">
-            <h3>🎮 Interatividade</h3>
-            <p>Jogo com pontuação, tempo, saúde da lavoura e quiz educativo.</p>
+            <h3>🎨 Elementos visuais</h3>
+            <p>
+              Elementos do jogo criados com formas, textos, emojis e canvas no
+              JavaScript.
+            </p>
           </article>
         </div>
       </div>
@@ -145,7 +234,12 @@
   </main>
 
   <footer class="rodape">
-    <p>Projeto Agrinho 2026 • EcoLavoura • HTML, CSS e JavaScript</p>
+    <div class="container">
+      <p>Projeto Agrinho 2026 • EcoLavoura</p>
+      <p>HTML • CSS • JavaScript</p>
+    </div>
   </footer>
+
+  <script src="js/script.js"></script>
 </body>
 </html>
