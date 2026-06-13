@@ -94,6 +94,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Cerca
     ctx.fillStyle = "#92400e";
+
     for (let x = 0; x < canvas.width; x += 90) {
       ctx.fillRect(x, 230, 12, 55);
     }
@@ -111,10 +112,11 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function desenharJogador() {
-    // Corpo do trator/carrinho ecológico
+    // Corpo do carrinho ecológico
     ctx.fillStyle = "#166534";
     ctx.fillRect(jogador.x + 10, jogador.y + 15, 50, 25);
 
+    // Cabine
     ctx.fillStyle = "#22c55e";
     ctx.fillRect(jogador.x + 25, jogador.y, 30, 25);
 
@@ -125,7 +127,7 @@ document.addEventListener("DOMContentLoaded", () => {
     ctx.arc(jogador.x + 55, jogador.y + 45, 12, 0, Math.PI * 2);
     ctx.fill();
 
-    // Símbolo
+    // Símbolo sustentável
     ctx.font = "24px Arial";
     ctx.fillText("🌱", jogador.x + 24, jogador.y + 29);
   }
@@ -215,7 +217,7 @@ document.addEventListener("DOMContentLoaded", () => {
         atualizarPainel();
 
         if (saude <= 0) {
-          finalizarJogo("A saúde da lavoura chegou a zero. Tente novamente!");
+          finalizarJogo("A saúde da lavoura chegou a zero.");
         }
       }
     });
@@ -250,7 +252,7 @@ document.addEventListener("DOMContentLoaded", () => {
     atualizarPainel();
 
     mensagemJogo.textContent =
-      "Use as setas do teclado ou toque/mouse para mover o carrinho ecológico.";
+      "Use as setas do teclado, o mouse ou o toque na tela para mover o carrinho ecológico.";
 
     intervaloTempo = setInterval(() => {
       if (!jogoAtivo) return;
@@ -259,7 +261,7 @@ document.addEventListener("DOMContentLoaded", () => {
       atualizarPainel();
 
       if (tempo <= 0) {
-        finalizarJogo("Tempo encerrado!");
+        finalizarJogo("Tempo encerrado.");
       }
     }, 1000);
 
@@ -345,7 +347,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // ===============================
-  // CONTROLES
+  // CONTROLES DO JOGO
   // ===============================
 
   document.addEventListener("keydown", (evento) => {
@@ -357,6 +359,8 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   canvas.addEventListener("mousemove", (evento) => {
+    if (!jogoAtivo) return;
+
     const retangulo = canvas.getBoundingClientRect();
     const escalaX = canvas.width / retangulo.width;
     const mouseX = (evento.clientX - retangulo.left) * escalaX;
@@ -364,16 +368,22 @@ document.addEventListener("DOMContentLoaded", () => {
     jogador.x = mouseX - jogador.largura / 2;
   });
 
-  canvas.addEventListener("touchmove", (evento) => {
-    evento.preventDefault();
+  canvas.addEventListener(
+    "touchmove",
+    (evento) => {
+      if (!jogoAtivo) return;
 
-    const toque = evento.touches[0];
-    const retangulo = canvas.getBoundingClientRect();
-    const escalaX = canvas.width / retangulo.width;
-    const toqueX = (toque.clientX - retangulo.left) * escalaX;
+      evento.preventDefault();
 
-    jogador.x = toqueX - jogador.largura / 2;
-  });
+      const toque = evento.touches[0];
+      const retangulo = canvas.getBoundingClientRect();
+      const escalaX = canvas.width / retangulo.width;
+      const toqueX = (toque.clientX - retangulo.left) * escalaX;
+
+      jogador.x = toqueX - jogador.largura / 2;
+    },
+    { passive: false }
+  );
 
   btnIniciar.addEventListener("click", iniciarJogo);
   btnReiniciar.addEventListener("click", reiniciarJogo);
@@ -473,7 +483,7 @@ document.addEventListener("DOMContentLoaded", () => {
       botao.textContent = alternativa;
       botao.type = "button";
 
-      botao.addEventListener("click", () => responderPergunta(index, botao));
+      botao.addEventListener("click", () => responderPergunta(index));
 
       alternativasQuiz.appendChild(botao);
     });
@@ -484,7 +494,7 @@ document.addEventListener("DOMContentLoaded", () => {
     atualizarTopoQuiz();
   }
 
-  function responderPergunta(indiceEscolhido, botaoEscolhido) {
+  function responderPergunta(indiceEscolhido) {
     if (respondeu) return;
 
     respondeu = true;
