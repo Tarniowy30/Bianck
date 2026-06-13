@@ -752,12 +752,13 @@ h3,
 .mensagem-jogo {
   color: #0b301c !important;
 }
-/* CORREÇÃO DA ETIQUETA PROJETO AGRINHO */
+/* CORREÇÃO MAIS FORTE DA ETIQUETA */
 
-.etiqueta {
-  background: #064e3b !important;
+.hero .etiqueta {
+  background: #052e16 !important;
   color: #ffffff !important;
-  border: 2px solid #ffffff !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25) !important;
-  font-weight: 800 !important;
+  border: 2px solid #bbf7d0 !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35) !important;
+  font-weight: 900 !important;
+  letter-spacing: 0.5px !important;
 }
